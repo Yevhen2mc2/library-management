@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 
 const schema = z.object({
   email: z.string().email(),
@@ -39,8 +39,6 @@ export const SignUpForm = () => {
   });
 
   async function onSubmit(values: Form) {
-    const supabase = createClient();
-
     try {
       const { error } = await supabase.auth.signUp({
         email: values.email,

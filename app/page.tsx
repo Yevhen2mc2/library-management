@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data: books } = await supabase.from("books").select("*");
 
   return (
@@ -16,7 +21,7 @@ export default async function Home() {
         className={"mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"}
       >
         {books?.map((book) => {
-          return <BookCard book={book} key={book.id} />;
+          return <BookCard book={book} user={user} key={book.id} />;
         })}
       </div>
     </div>

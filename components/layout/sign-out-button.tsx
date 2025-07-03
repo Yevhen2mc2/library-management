@@ -2,16 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 
 export const SignOutButton = () => {
   const router = useRouter();
 
   const handle = async () => {
-    const supabase = createClient();
-
     try {
       const { error } = await supabase.auth.signOut();
 
