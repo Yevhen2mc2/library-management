@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email(),
@@ -24,6 +28,8 @@ const schema = z.object({
 type Form = z.infer<typeof schema>;
 
 export const SignInForm = () => {
+  const router = useRouter();
+
   const form = useForm<Form>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -32,8 +38,27 @@ export const SignInForm = () => {
     },
   });
 
-  function onSubmit(values: Form) {
-    console.log(values);
+  async function onSubmit(values: Form) {
+    const supabase = createClient();
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (data.user) {
+        toast.success("Signed in successfully");
+        router.push("/");
+        router.refresh();
+      }
+
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again later.");
+    }
   }
 
   return (
@@ -82,6 +107,13 @@ export const SignInForm = () => {
             </Button>
           </form>
         </Form>
+
+        <div className="text-muted-foreground mt-4 text-center text-sm">
+          No account?{" "}
+          <Link href={"/sign-up"} className="text-primary hover:underline">
+            Sign Up
+          </Link>
+        </div>
 
         <div className="bg-muted mt-6 rounded-lg p-4">
           <p className="mb-2 text-sm">Demo credentials:</p>
