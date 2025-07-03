@@ -34,25 +34,33 @@ export async function updateSession(request: NextRequest) {
   // issues with users being randomly logged out.
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const publicPages = ["/", "/sign-in", "/sign-up"];
+  // Check for email verification code parameter
+  const url = request.nextUrl.clone();
+  const code = url.searchParams.get("code");
+
+  if (code && url.pathname === "/") {
+    url.pathname = "/validate-email";
+    return NextResponse.redirect(url);
+  }
+
+  const publicPages = ["/", "/sign-in", "/sign-up", "/validate-email"];
   const pathname = request.nextUrl.pathname;
 
   if (!user && !publicPages.includes(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
-    return NextResponse.redirect(url);
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/sign-in";
+    return NextResponse.redirect(redirectUrl);
   }
 
   const authPages = ["/sign-in", "/sign-up"];
   if (user && authPages.includes(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/";
+    return NextResponse.redirect(redirectUrl);
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
@@ -69,4 +77,8 @@ export async function updateSession(request: NextRequest) {
   // of sync and terminate the user's session prematurely!
 
   return supabaseResponse;
+}
+
+export async function middleware(request: NextRequest) {
+  return await updateSession(request);
 }
