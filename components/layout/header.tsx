@@ -1,16 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut } from "lucide-react";
+import { LogIn } from "lucide-react";
+import { SignOutButton } from "@/components/layout/sign-out-button";
+import { User } from "@supabase/auth-js";
 
 interface IProps {
-  user?: unknown;
+  user: User | null;
 }
 
-export const Header = ({ user }: IProps) => {
-  const handleSignOut = () => {
-    console.log("TODO sign out");
-  };
-
+export const Header = async ({ user }: IProps) => {
   return (
     <header className="border-b bg-white">
       <div className="container mx-auto px-4 py-4">
@@ -27,12 +25,9 @@ export const Header = ({ user }: IProps) => {
             {user ? (
               <>
                 <span className="text-muted-foreground text-sm">
-                  Welcome, TODO
+                  {user.email}
                 </span>
-                <Button variant="outline" onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </Button>
+                <SignOutButton />
               </>
             ) : (
               <Link href={"/sign-in"}>
