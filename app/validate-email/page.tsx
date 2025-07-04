@@ -1,6 +1,11 @@
-import Link from "next/link";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function ValidateEmailPage() {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md space-y-8">
@@ -9,16 +14,18 @@ export default function ValidateEmailPage() {
             Email Verified Successfully
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Thanks for verification email. Please login to continue.
+            Thanks for verification email
           </p>
         </div>
         <div className="text-center">
-          <Link
-            href="/sign-in"
-            className="inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+          <Button
+            onClick={() => {
+              router.refresh();
+              router.push("/");
+            }}
           >
-            Sign In
-          </Link>
+            Main page
+          </Button>
         </div>
       </div>
     </div>
