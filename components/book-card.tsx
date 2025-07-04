@@ -4,21 +4,10 @@ import { Book } from "@/types/book";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/auth-js";
-import { supabase } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { RemoveBookDialog } from "@/components/book/remove-book-dialog";
 
 interface IProps {
   user: User | null;
@@ -31,20 +20,6 @@ export const BookCard = ({ book, user }: IProps) => {
   const coverUrl = book.isbn
     ? `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`
     : null;
-
-  const onRemove = async () => {
-    try {
-      const { error } = await supabase.from("books").delete().eq("id", book.id);
-      if (error) {
-        toast.error("Failed to delete the book");
-        return;
-      }
-      toast.success("Book deleted successfully");
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong");
-    }
-  };
 
   return (
     <Card className="group transition-shadow duration-200 hover:shadow-lg">
@@ -76,36 +51,15 @@ export const BookCard = ({ book, user }: IProps) => {
               onClick={() => router.push(`/edit/${book.id}`)}
               className="flex-1"
             >
-              <Edit className="mr-1 h-4 w-4" />
+              <Edit />
               Edit
             </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Trash2 className="mr-1 h-4 w-4" />
-                  Delete
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    the book &#34;{book.title}&#34;.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <DialogClose>
-                    <Button variant={"destructive"} onClick={onRemove}>
-                      Remove
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <RemoveBookDialog book={book}>
+              <Button variant="outline" size="sm" className="flex-1">
+                <Trash2 className="mr-1 h-4 w-4" />
+                Delete
+              </Button>
+            </RemoveBookDialog>
           </div>
         )}
       </CardContent>
