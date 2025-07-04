@@ -24,7 +24,7 @@ export const Header = async ({ user }: IProps) => {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <span className="text-muted-foreground text-sm">
+                <span className="text-muted-foreground hidden text-sm sm:block">
                   {user.email}
                 </span>
                 <SignOutButton />

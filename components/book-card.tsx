@@ -44,7 +44,7 @@ export const BookCard = ({ book, user }: IProps) => {
         </div>
 
         {!!user && (
-          <div className="mt-4 flex gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <div className="mt-4 flex gap-2 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
             <Button
               variant="outline"
               size="sm"
