@@ -1,10 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
+import { useEffect } from "react";
+import Link from "next/link";
 
 export default function ValidateEmailPage() {
-  const router = useRouter();
+  useEffect(() => {
+    // refresh auth status
+    window.location.reload();
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -18,14 +22,9 @@ export default function ValidateEmailPage() {
           </p>
         </div>
         <div className="text-center">
-          <Button
-            onClick={() => {
-              router.refresh();
-              router.push("/");
-            }}
-          >
+          <Link href={"/"} className={buttonVariants()}>
             Main page
-          </Button>
+          </Link>
         </div>
       </div>
     </div>
