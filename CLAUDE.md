@@ -25,10 +25,10 @@ The development server runs on http://localhost:3000
 
 ## Project Overview
 
-This is a **library management system** built with Next.js 15 and Supabase. The application allows users to browse books publicly, and authenticated users can add, edit, and delete books. The live application is deployed at https://library-management-ruby-nine.vercel.app.
+This is a **library management system** built with Next.js 16 and Supabase. The application allows users to browse books publicly, and authenticated users can add, edit, and delete books. The live application is deployed at https://library-management-ruby-nine.vercel.app.
 
 **Tech Stack:**
-- Next.js 15.5.7 with App Router and React 19
+- Next.js 16.1.4 with App Router and React 19.2.3
 - Supabase for authentication and PostgreSQL database
 - TypeScript for type safety
 - Tailwind CSS v4 for styling
@@ -39,7 +39,7 @@ This is a **library management system** built with Next.js 15 and Supabase. The 
 
 ### Server Components vs Client Components
 
-This codebase follows Next.js 15 best practices with a **Server Components-first approach**:
+This codebase follows Next.js 16 best practices with a **Server Components-first approach**:
 
 **Server Components** (default):
 - All page components (`app/page.tsx`, `app/(protected)/edit/[id]/page.tsx`, etc.)
@@ -194,7 +194,7 @@ const onSubmit = async (data: z.infer<typeof schema>) => {
 - Route protection is enforced by middleware, not per-route logic
 
 **Dynamic Routes:**
-- Next.js 15 requires treating `params` as a Promise in dynamic routes
+- Next.js 16 requires treating `params` as a Promise in dynamic routes
 - Example: `const params = await props.params; const id = params.id;`
 
 ## Component Organization
