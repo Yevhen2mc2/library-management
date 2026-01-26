@@ -1,19 +1,19 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ValidateEmailPage() {
   const router = useRouter();
-  const [updated, setUpdated] = useState(false);
+  const hasRefreshed = useRef(false);
 
   useEffect(() => {
-    if (!updated) {
+    if (!hasRefreshed.current) {
       router.refresh();
-      setUpdated(true);
+      hasRefreshed.current = true;
     }
-  }, [router, updated]);
+  }, [router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
