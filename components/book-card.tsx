@@ -8,61 +8,70 @@ import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/auth-js";
 import { RemoveBookDialog } from "@/components/book/remove-book-dialog";
+import { BookDrawer } from "@/components/book/book-drawer";
 
-interface IProps {
+interface Props {
   user: User | null;
   book: Book;
 }
 
-export const BookCard = ({ book, user }: IProps) => {
+export const BookCard = ({ book, user }: Props) => {
   const router = useRouter();
 
-  const coverUrl = book.isbn
+  const coverUrlSmall = book.isbn
     ? `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`
     : null;
 
   return (
-    <Card className="group transition-shadow duration-200 hover:shadow-lg">
-      <CardContent className="p-4">
-        <div className="mx-auto mb-4 aspect-square w-40 overflow-hidden rounded-lg bg-gray-100">
-          <Image
-            width={160}
-            height={160}
-            src={coverUrl || ""}
-            alt={`Cover of ${book.title}`}
-            className="h-full w-full object-cover"
-          />
-        </div>
+    <div className="relative">
+      <BookDrawer book={book}>
+        <Card className="cursor-pointer transition-shadow duration-200 hover:shadow-lg">
+          <CardContent className="p-4">
+            <div className="mx-auto mb-4 aspect-square w-40 overflow-hidden rounded-lg bg-gray-100">
+              <Image
+                width={160}
+                height={160}
+                src={coverUrlSmall || ""}
+                alt={`Cover of ${book.title}`}
+                className="h-full w-full object-cover"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <h3 className="line-clamp-2">{book.title}</h3>
-          <p className="text-muted-foreground">{book.author}</p>
-          <div className="text-muted-foreground flex items-center justify-between text-sm">
-            <span>{book.year}</span>
-            <span>${book.price.toFixed(2)}</span>
-          </div>
-        </div>
+            <div className="space-y-2">
+              <h3 className="line-clamp-2">{book.title}</h3>
+              <p className="text-muted-foreground">{book.author}</p>
+              <div className="text-muted-foreground flex items-center justify-between text-sm">
+                <span>{book.year}</span>
+                <span>${book.price.toFixed(2)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </BookDrawer>
 
-        {!!user && (
-          <div className="mt-4 flex gap-2 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
+      {!!user && (
+        <div className="absolute top-2 right-2 flex gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/edit/${book.id}`);
+            }}
+          >
+            <Edit className="size-4" />
+          </Button>
+          <RemoveBookDialog book={book}>
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(`/edit/${book.id}`)}
-              className="flex-1"
+              variant="ghost"
+              size="icon"
+              onClick={(e) => e.stopPropagation()}
             >
-              <Edit />
-              Edit
+              <Trash2 className="size-4" />
             </Button>
-            <RemoveBookDialog book={book}>
-              <Button variant="outline" size="sm" className="flex-1">
-                <Trash2 className="mr-1 h-4 w-4" />
-                Delete
-              </Button>
-            </RemoveBookDialog>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          </RemoveBookDialog>
+        </div>
+      )}
+    </div>
   );
 };
