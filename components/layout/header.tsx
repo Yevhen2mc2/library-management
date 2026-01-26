@@ -4,11 +4,11 @@ import { LogIn } from "lucide-react";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 import { User } from "@supabase/auth-js";
 
-interface IProps {
+interface Props {
   user: User | null;
 }
 
-export const Header = async ({ user }: IProps) => {
+export const Header = async ({ user }: Props) => {
   return (
     <header className="border-b bg-white">
       <div className="container mx-auto px-4 py-4">
