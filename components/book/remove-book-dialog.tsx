@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Book } from "@/types/book";
-import { supabase } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
+import { deleteBook } from "@/app/actions/books";
 
 interface Props {
   book: Book;
@@ -29,9 +29,12 @@ export const RemoveBookDialog = ({ book, children }: Props) => {
     if (!book) return;
 
     try {
-      const { error } = await supabase.from("books").delete().eq("id", book.id);
+      const result = await deleteBook(book.id);
 
-      if (error) throw error;
+      if (!result.success) {
+        toast.error(result.error || "Failed to delete book");
+        return;
+      }
 
       toast.success("Book deleted successfully");
       router.push("/");

@@ -19,10 +19,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { supabase } from "@/lib/supabase/client";
-import { Book, CreateBookInput, UpdateBookInput } from "@/types/book";
+import { Book } from "@/types/book";
 import { useRouter } from "next/navigation";
 import { RemoveBookDialog } from "@/components/book/remove-book-dialog";
+import { createBook, updateBook } from "@/app/actions/books";
 
 const schema = z.object({
   isbn: z.string().min(1, "ISBN is required").max(13, "ISBN must be 13 digits"),
@@ -62,43 +62,25 @@ export const BookFormPage = ({ book }: Props) => {
     setIsSubmitting(true);
 
     try {
-      if (isEdit) {
-        // Update existing book
-        const updateData: UpdateBookInput = {
-          isbn: parseInt(data.isbn),
-          title: data.title,
-          author: data.author,
-          year: data.year,
-          price: data.price,
-          description: data.description || null,
-        };
+      const bookData = {
+        isbn: parseInt(data.isbn),
+        title: data.title,
+        author: data.author,
+        year: data.year,
+        price: data.price,
+        description: data.description || null,
+      };
 
-        const { error } = await supabase
-          .from("books")
-          .update(updateData)
-          .eq("id", book.id);
+      const result = isEdit
+        ? await updateBook(book.id, bookData)
+        : await createBook(bookData);
 
-        if (error) throw error;
-
-        toast.success("Book updated successfully");
-      } else {
-        // Create new book
-        const insertData: CreateBookInput = {
-          isbn: parseInt(data.isbn),
-          title: data.title,
-          author: data.author,
-          year: data.year,
-          price: data.price,
-          description: data.description || null,
-        };
-
-        const { error } = await supabase.from("books").insert([insertData]);
-
-        if (error) throw error;
-
-        toast.success("Book created successfully");
+      if (!result.success) {
+        toast.error(result.error || "Operation failed");
+        return;
       }
 
+      toast.success(`Book ${isEdit ? "updated" : "created"} successfully`);
       router.push("/");
     } catch (error) {
       console.error("Error saving book:", error);
